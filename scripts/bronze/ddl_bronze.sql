@@ -6,6 +6,7 @@ Scripts Purpose:
 	This scripts creates tables in the 'bronze' schema, dropping existing tables
 	if they already exists.
 	Run this script to re-define the DDL struture of 'bronze' Tables
+	CASCADE is force to DROP TABLE IF EXISTS
 */
 
 

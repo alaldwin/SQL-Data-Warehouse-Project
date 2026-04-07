@@ -85,7 +85,7 @@ DROP TABLE IF EXISTS gold.dim_date;
 CREATE TABLE gold.dim_date AS 
 SELECT
 	TO_CHAR(order_purchase_timestamp, 'YYYYMMDD')::INT AS date_id,
-	DATE(order_purchase_timestamp) AS full_date,
+	TIMESTAMP(order_purchase_timestamp) AS full_date,
 	EXTRACT(YEAR FROM order_purchase_timestamp) AS year,
 	EXTRACT(MONTH FROM order_purchase_timestamp) AS month,
 	EXTRACT(DAY FROM order_purchase_timestamp) AS day

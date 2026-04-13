@@ -45,14 +45,24 @@ Warnings:
 import pandas as pd
 from sqlalchemy import create_engine
 
+def extract_files():
+    customers = pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\files_learning_coding_in_python\DataWarehouse_project\df_Customers.csv")
+    orderitems = pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\coding_in_python\DataWarehouse_project\df_OrderItems.csv")
+    orders = pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\coding_in_python\DataWarehouse_project\df_Orders.csv")
+    payments = pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\coding_in_python\DataWarehouse_project\df_Payments.csv")
+    products = pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\coding_in_python\DataWarehouse_project\df_Products.csv")
 
-def transform_files(df):
+    return (customers,orderitems,orders,payments,products)
+
+
     # standardize column names
+def transform_generic(df):
     df.columns = df.columns.str.lower().str.strip()
+    return df
 
-    df = df.rename(columns={
-        "customer_zip_code_prefix": "customer_code",
-        "order_approved_at": "order_approved",
+def transform_products(df):
+    df.columns = df.columns.str.lower().str.strip()
+    return df.rename(columns={
         "product_category_name": "product_category",
         "product_weight_g": "product_weight",
         "product_length_cm": "product_length",
@@ -60,43 +70,51 @@ def transform_files(df):
         "product_width_cm": "product_width"
     })
 
-    return df
-
-def load_to_postgres(df, table_name, schema='bronze'):
-# Database Loading: Connection to PostgreSQL is established via SQLAlchemy:
+def load_to_postgres(df, table_name, schema, key_column):
     engine = create_engine("postgresql://postgres:aldwino0012@localhost:5432/datamodeling")
-# Data is loaded into each table using pandas.DataFrame.to_sql() with if_exists="append", allowing incremental loads without overwriting existing data.
-    df.to_sql(
-        name=table_name,
-        con=engine,
-        schema=schema,
-        if_exists="append",   # important for pipelines
-      # All data is inserted without the DataFrame index (index=False).
-        index=False
-    )
 
-    print(f"Data loaded to {schema}.{table_name} successfully!")
-"""
-Execution Flow:
-1. The main() function reads each CSV and applies transformations via transform_files().
-2. Each transformed DataFrame is loaded into its corresponding table using load_to_postgres().
-3. The script prints a success message for each table after loading.
-"""
+ # remove duplicates
+    df = df.drop_duplicates(subset=[key_column])
+
+    try:
+        existing_ids = pd.read_sql(
+            f"SELECT {key_column} FROM {schema}.{table_name}",
+            engine
+        )
+        df = df[~df[key_column].isin(existing_ids[key_column])]
+    except Exception:
+            # table might not exist yet
+            print(f"Table {schema}.{table_name} not found. Creating new table.")
+
+    # insert
+    if not df.empty:
+        df.to_sql(
+            name=table_name,
+            con=engine,
+            schema=schema,
+            if_exists="append",
+            index=False
+        )
+        print(f"{len(df)} rows inserted into {schema}.{table_name}")
+    else:
+        print(f"No new data for {table_name}")
+
 
 def main():
+    customers, orderitems, orders, payments, products = extract_files()
 
-    df_customers = transform_files(pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\files_learning_coding_in_python\DataWarehouse_project\df_Customers.csv"))
-    df_orderitems = transform_files(pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\files_learning_coding_in_python\DataWarehouse_project\df_OrderItems.csv"))
-    df_orders = transform_files(pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\files_learning_coding_in_python\DataWarehouse_project\df_Orders.csv"))
-    df_payments = transform_files(pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\files_learning_coding_in_python\DataWarehouse_project\df_Payments.csv"))
-    df_products = transform_files(pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\files_learning_coding_in_python\DataWarehouse_project\df_Products.csv"))
+    df_customers = transform_generic(customers)
+    df_orders = transform_generic(orders)
+    df_orderitems = transform_generic(orderitems)
+    df_payments = transform_generic(payments)
+    df_products = transform_products(products)
 
-    # load raw (bronze)
-    load_to_postgres(df_customers, "src_customer", schema="bronze")
-    load_to_postgres(df_orders, "src_orders", schema="bronze")
-    load_to_postgres(df_orderitems, "src_orderitems", schema="bronze")
-    load_to_postgres(df_payments, "src_payments", schema="bronze")
-    load_to_postgres(df_products, "src_products", schema="bronze")
+    load_to_postgres(df_customers, table_name="src_customer", schema="bronze", key_column="customer_id")
+    load_to_postgres(df_orders, table_name="src_orders", schema="bronze", key_column="order_id")
+    load_to_postgres(df_orderitems, table_name="src_orderitems", schema="bronze", key_column="order_id")
+    load_to_postgres(df_payments, table_name="src_payments", schema="bronze", key_column="order_id")
+    load_to_postgres(df_products, table_name="src_products", schema="bronze", key_column="product_id")
+
     print("Successfully!!.")
 
 if __name__=="__main__":

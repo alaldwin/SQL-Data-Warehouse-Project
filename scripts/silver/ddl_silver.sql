@@ -59,7 +59,7 @@ CREATE TABLE silver.src_payments
   (
 	order_id VARCHAR(50),
 	payment_sequential INT,
-	payment_type VARCHAR(50),
+	payment_type VARCHAR(100),
 	payment_installments INT,
 	payment_value NUMERIC(10,2),
 	dwh_create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

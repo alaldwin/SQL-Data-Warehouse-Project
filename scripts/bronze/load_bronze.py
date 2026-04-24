@@ -44,6 +44,8 @@ Warnings:
 """
 import pandas as pd
 from sqlalchemy import create_engine
+import logging
+logging.basicConfig(level=logging.INFO)
 
 def extract_files():
     customers = pd.read_csv(r"C:\Users\aldwin\OneDrive\Desktop\files_learning_coding_in_python\DataWarehouse_project\df_Customers.csv")
@@ -84,7 +86,7 @@ def load_to_postgres(df, table_name, schema, key_column):
         df = df[~df[key_column].isin(existing_ids[key_column])]
     except Exception:
             # table might not exist yet
-            print(f"Table {schema}.{table_name} not found. Creating new table.")
+            logging.info(f"Table {schema}.{table_name} not found. Creating new table.")
 
     # insert
     if not df.empty:
@@ -95,9 +97,9 @@ def load_to_postgres(df, table_name, schema, key_column):
             if_exists="append",
             index=False
         )
-        print(f"{len(df)} rows inserted into {schema}.{table_name}")
+        logging.info(f"{len(df)} rows inserted into {schema}.{table_name}")
     else:
-        print(f"No new data for {table_name}")
+        logging.info(f"No new data for {table_name}")
 
 
 def main():
@@ -119,7 +121,6 @@ def main():
 
 if __name__=="__main__":
     main()
-
 """
 Usage: 
 bash:

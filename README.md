@@ -169,17 +169,14 @@ tests/
 - Deploy to cloud platforms (GCP BigQuery / AWS Redshift)
 - Implement incremental loading (CDC)
 
----
 
 ## 👨‍💻 Author
 
 Aldwin Magpantay
 Aspiring Data Engineer
 
----
 
 📜 License
 
 This project is licensed under the MIT License.
-
 

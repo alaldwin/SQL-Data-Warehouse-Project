@@ -62,24 +62,6 @@ SQL-Data-Warehouse-Project/
 
 ---
 
-## ETL Pipeline
-
-### 1. Extract (Bronze Layer)
-- Load raw CSV files using python into staging tables  
-- Preserve original data format  
-
-### 2. Transform (Silver Layer)
-- Clean and standardize data  
-- Handle null values and inconsistencies  
-- Apply business logic  
-
-### 3. Load (Gold Layer)
-- Create **dimension tables** (e.g., customers, products)  
-- Create **fact tables** (e.g., sales transactions)  
-- Build a **star schema** for analytics  
-
----
-
 ## Skills Demonstrated
 
 This project showcases key **Data Engineering skills**:

@@ -36,7 +36,7 @@ This project follows the **Medallion Architecture**, a widely used pattern in mo
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 ```
 SQL-Data-Warehouse-Project/
 │
@@ -88,16 +88,16 @@ This project showcases key **Data Engineering skills**:
 
 ## How to Run This Project
 
-### 1. Clone the repository
+## 1. Clone the repository
 ```bash
 git clone https://github.com/alaldwin/SQL-Data-Warehouse-Project.git
 ```
-### 2. Prepare datasets
+## 2. Prepare datasets
 
 - Place CSV files inside the ```datasets/``` folder
 - Ensure file paths match the SQL scripts
 
-### 3. Run SQL scripts in order
+## 3. Run SQL scripts in order
 ```
 SQL
 

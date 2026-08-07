@@ -40,16 +40,16 @@ This project follows the **Medallion Architecture**, a widely used pattern in mo
 ```
 SQL-Data-Warehouse-Project/
 │
-├── datasets/ # Raw CSV datasets (source data)
+├── datasets/
 │
-├── docs/ # Documentation and architecture diagrams
+├── docs/
 │ ├── data_architecture.drawio
 │ ├── data_flow.drawio
 │ ├── data_models.drawio
 │ ├── data_catalog.md
 │ └── naming-conventions.md
 │
-├── scripts/ # SQL scripts for ETL pipeline
+├── scripts/
 │ ├── bronze/ # Load raw data using python into staging tables
 │ ├── silver/ # Data cleaning and transformation
 │ └── gold/ # Fact & dimension tables (Star Schema)

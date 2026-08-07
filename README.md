@@ -50,9 +50,9 @@ SQL-Data-Warehouse-Project/
 │ └── naming-conventions.md
 │
 ├── scripts/
-│ ├── bronze/ # Load raw data using python into staging tables
-│ ├── silver/ # Data cleaning and transformation
-│ └── gold/ # Fact & dimension tables (Star Schema)
+│ ├── bronze/
+│ ├── silver/
+│ └── gold/
 │
 ├── tests/ # Data quality checks and validation scripts
 │
